@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCity.me | Find Your Energy</title>
+    <style>
+        /* The dynamic background */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            transition: background 1.5s ease-in-out; /* The smooth shift! */
+            background: linear-gradient(135deg, #1e293b, #0f172a); /* Default Slate */
+            color: white;
+        }
+
+        /* The Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card">
+        <h1>VibeCity.me</h1>
+        <p>I'm feeling...</p>
+        
+        <button onclick="changeVibe('tulum')">🌴 Tulum</button>
+        <button onclick="changeVibe('paris')">🍷 Paris</button>
+        <button onclick="changeVibe('tokyo')">🗼 Tokyo</button>
+        <button onclick="changeVibe('sd')">☀️ San Diego</button>
+
+        <div id="results" style="margin-top: 20px;">
+            </div>
+    </div>
+
+    <script>
+        function changeVibe(vibe) {
+            const body = document.body;
+            if (vibe === 'tulum') body.style.background = "linear-gradient(135deg, #2dd4bf, #fde68a)";
+            if (vibe === 'paris') body.style.background = "linear-gradient(135deg, #7c3aed, #db2777)";
+            if (vibe === 'tokyo') body.style.background = "linear-gradient(135deg, #06b6d4, #4ade80)";
+            if (vibe === 'sd')    body.style.background = "linear-gradient(135deg, #fbbf24, #ef4444)";
+        }
+    </script>
+</body>
+</html>
