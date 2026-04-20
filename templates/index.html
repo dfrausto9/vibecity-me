@@ -7,16 +7,37 @@
     <style>
         /* The dynamic background */
         body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', sans-serif;
-            transition: background 1.5s ease-in-out; /* The smooth shift! */
-            background: linear-gradient(135deg, #1e293b, #0f172a); /* Default Slate */
-            color: white;
+           <div class="glass-card">
+    <h1>VibeCity.me</h1>
+    <p id="vibe-label">Current Vibe: Chill</p>
+    
+    <input type="range" min="1" max="100" value="1" class="slider" id="vibeSlider">
+
+    <div id="results" style="margin-top: 20px;">
+        <p>Explore San Diego...</p>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('vibeSlider');
+    const label = document.getElementById('vibe-label');
+    const body = document.body;
+
+    slider.oninput = function() {
+        let val = this.value;
+        
+        if (val < 33) {
+            label.innerHTML = "Vibe: Deep Chill (Sunset Cliffs)";
+            body.style.background = "linear-gradient(135deg, #2dd4bf, #fde68a)"; // Teal & Gold
+        } else if (val < 66) {
+            label.innerHTML = "Vibe: The Local Scene (North Park)";
+            body.style.background = "linear-gradient(135deg, #fbbf24, #ef4444)"; // Orange & Red
+        } else {
+            label.innerHTML = "Vibe: Electric Night (Gaslamp)";
+            body.style.background = "linear-gradient(135deg, #7c3aed, #db2777)"; // Purple & Pink
+        }
+    };
+</script>
         }
 
         /* The Glass Card */
