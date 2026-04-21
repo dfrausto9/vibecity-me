@@ -53,6 +53,37 @@ def get_vibe_results(city, mood, budget):
     except Exception as e:
         raise Exception(f"Google Maps Error: {str(e)}")
 
+# The "Discovery Engine" Data
+VIBE_TWINS = {
+    "paris": {
+        "twin": "Marseille", 
+        "vibe_type": "Artistic & Urban",
+        "pitch": "Trade the Eiffel Tower for the Mediterranean sun and a grittier, authentic French soul."
+    },
+    "tulum": {
+        "twin": "Sayulita", 
+        "vibe_type": "Boho-Chic",
+        "pitch": "Less 'scene', more surf. The same jungle-meets-ocean energy without the crowds."
+    },
+    "san diego": {
+        "twin": "Ensenada", 
+        "vibe_type": "Coastal Adventure",
+        "pitch": "Love the SD coastline? Head south for world-class food and rugged Pacific vibes at a fraction of the cost."
+    }
+}
+
+@app.route('/check_vibe', methods=['POST'])
+def check_vibe():
+    data = request.get_json()
+    city_input = data.get('city', '').lower()
+    
+    if city_input in VIBE_TWINS:
+        return jsonify({
+            "status": "pivot",
+            "suggestion": VIBE_TWINS[city_input]
+        })
+    return jsonify({"status": "proceed"})
+
 # =============================================================================
 # --- Routes ---
 # =============================================================================
