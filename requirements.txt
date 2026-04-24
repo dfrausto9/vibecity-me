@@ -3,3 +3,4 @@ requests
 stripe
 supabase
 gunicorn
+beautifulsoup4
