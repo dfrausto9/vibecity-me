@@ -1,268 +1,376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeCity.me | Find Your Energy</title>
-    <style>
-        body {
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white; transition: background 1.5s ease-in-out;
-            overflow-y: auto; padding: 20px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vibe City Kitchen | Recipes for Your Mood</title>
+<meta name="description" content="Pick how you feel tonight, from cozy to hangry, and get recipes that match. Each one opens as a clean, ad-free ingredient list with RecipeScraperPro.">
+<link rel="canonical" href="https://vibecity.me/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vibecity.me/">
+<meta property="og:title" content="Vibe City Kitchen: cook for the mood you're in">
+<meta property="og:description" content="Nine moods, 36 recipes, zero blog clutter.">
+<meta name="theme-color" content="#e8590c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the city is a map of mood "districts"; pick a district, get its menu of dishes, each one hands off to RecipeScraperPro. */
+/* Palette: appetite colors. Orange leads, tomato red for small accents, mustard for highlights,
+   on a warm peach ground with espresso-brown text. */
+:root {
+  --bg: #fff4e8;
+  --surface: #ffffff;
+  --ink: #2b1a12;
+  --muted: #7a5a48;
+  --line: #f2d6bf;
+  --accent: #e8590c;
+  --btn: #c2410c;
+  --btn-ink: #ffffff;
+  --street: #c62f22;
+  --mustard: #f5b700;
+  --chip: #ffe6bf;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1e130d; --surface: #2a1b13; --ink: #fbebdd; --muted: #c9a48c; --line: #45291b;
+    --accent: #ff7a2f; --btn: #ff7a2f; --btn-ink: #1e130d; --street: #ff7b6b; --mustard: #ffc93c; --chip: #3a2516;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1e130d; --surface: #2a1b13; --ink: #fbebdd; --muted: #c9a48c; --line: #45291b;
+  --accent: #ff7a2f; --btn: #ff7a2f; --btn-ink: #1e130d; --street: #ff7b6b; --mustard: #ffc93c; --chip: #3a2516;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+.stripe { height: 8px; background: linear-gradient(90deg, var(--street) 0 33.3%, var(--accent) 33.3% 66.6%, var(--mustard) 66.6%); }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 56px;
+  display: grid; gap: 32px;
+}
+header { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--street); }
+h1 {
+  font-family: var(--display); font-weight: 800; font-size: clamp(2.4rem, 7vw, 4.4rem);
+  line-height: .95; letter-spacing: -.02em; margin: 0; text-wrap: balance;
+}
+h1 span { color: var(--accent); background: linear-gradient(transparent 68%, color-mix(in srgb, var(--mustard) 55%, transparent) 68%); padding: 0 .06em; }
+.lede { margin: 0; max-width: 58ch; color: var(--muted); font-size: 1.05rem; }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px; padding: 40px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            width: 95%; max-width: 450px;
-        }
+.ask { font-family: var(--display); font-weight: 500; font-size: 1.35rem; margin: 0; }
+.districts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.district {
+  appearance: none; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 14px; padding: 14px 14px 12px; text-align: left; cursor: pointer;
+  display: grid; gap: 2px; font: inherit; transition: border-color .15s, transform .15s;
+}
+.district:hover { border-color: var(--accent); }
+.district:focus-visible { outline: 3px solid var(--mustard); outline-offset: 2px; }
+.district[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+.district .name { font-family: var(--display); font-weight: 800; font-size: 1.1rem; }
+.district .street { font-family: var(--mono); font-size: 11px; opacity: .75; }
+.district .thumb { display: block; height: 64px; border-radius: 10px; background: var(--chip); margin-bottom: 8px; overflow: hidden; }
+.district[aria-pressed="true"] .thumb { background: color-mix(in srgb, var(--btn-ink) 22%, transparent); }
+.district .thumb svg { width: 100%; height: 100%; display: block; }
+.banner { height: clamp(160px, 28vw, 240px); border-radius: 20px; background: var(--chip); overflow: hidden; display: grid; place-items: center; }
+.banner svg { width: 100%; height: 100%; display: block; }
+.banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        h1 { margin-top: 0; letter-spacing: -1px; color: #f6ad55; }
-        .hint { font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px; text-align: left; }
-        
-        input[type="text"] {
-            width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid rgba(255, 255, 255, 0.2); color: white; margin-bottom: 10px; box-sizing: border-box; outline: none;
-        }
+.menu-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; border-top: 3px solid var(--accent); padding-top: 18px; }
+.menu-head h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.6rem, 4vw, 2.2rem); margin: 0; letter-spacing: -.01em; }
+.menu-head p { margin: 4px 0 0; color: var(--muted); max-width: 52ch; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
+.toggle input { accent-color: var(--accent); width: 18px; height: 18px; }
 
-        .btn-main { background: #ed8936; border: none; width: 100%; font-size: 1rem; color: white; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        /* TOGGLE SWITCH CSS */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider-toggle { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 20px; }
-        .slider-toggle:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider-toggle { background-color: #f6ad55; }
-        input:checked + .slider-toggle:before { transform: translateX(20px); }
+.dishes { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.dish {
+  background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--mustard); border-radius: 16px; padding: 18px;
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 8px; min-width: 0;
+}
+.meta { display: flex; gap: 6px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+.meta span { background: var(--chip); border-radius: 999px; padding: 2px 9px; }
+.dish h3 { font-family: var(--display); font-weight: 800; font-size: 1.2rem; line-height: 1.15; margin: 0; text-wrap: balance; }
+.dish p { margin: 0; color: var(--muted); font-size: 15px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-weight: 600; font-size: 14px;
+  border-radius: 999px; padding: 8px 14px; border: 1.5px solid var(--ink); color: var(--ink);
+}
+.btn.primary { background: var(--btn); border-color: var(--btn); color: var(--btn-ink); }
+.btn:focus-visible { outline: 3px solid var(--mustard); outline-offset: 2px; }
+.btn:hover { filter: brightness(1.05); }
+.empty { color: var(--muted); padding: 18px; border: 1.5px dashed var(--line); border-radius: 16px; }
 
-        #results { margin-top: 25px; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.2); text-align: left; min-height: 50px; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.05); }
-        .credit-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
-    </style>
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; padding: 22px; border-radius: 18px; background: var(--chip); }
+.how div { display: grid; gap: 4px; align-content: start; }
+.how b { font-family: var(--display); font-size: 1.05rem; }
+.how .n { font-family: var(--mono); font-size: 12px; color: var(--street); }
+.how p { margin: 0; color: var(--muted); font-size: 15px; }
+footer { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); }
+footer a { color: var(--btn); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<style>
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
 </head>
 <body>
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Vibe City · Kitchen District</div>
+    <h1>Cook for the <span>mood</span> you're in.</h1>
+    <p class="lede">Pick how you feel tonight. We'll point you to dishes that match, then RecipeScraperPro strips the blog clutter so you get straight to the ingredients.</p>
+  </header>
 
-    <div class="glass-card">
-        <h1>VibeCity.me</h1>
-        <p id="vibe-label" style="color: #a0aec0;">Extracting local energy...</p>
+  <section style="display:grid;gap:14px" aria-labelledby="ask">
+    <p class="ask" id="ask">What's the vibe?</p>
+    <div class="districts" id="districts" role="group" aria-label="Moods"></div>
+  </section>
 
-        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; margin-bottom: 20px;">
-            <span style="font-size: 0.7rem; color: #718096;">BALANCE: </span>
-            <span id="balance-amt" style="font-weight: bold; color: #f6ad55;">$0.00</span>
-        </div>
-<div style="margin-bottom: 20px; font-size: 0.7rem; color: #718096; word-break: break-all;">
-    <div>YOUR UNIQUE KEY:</div>
-    <div id="display-key" style="background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; margin-top: 5px; cursor: pointer;" onclick="copyToClipboard()">
-        Loading key...
+  <section style="display:grid;gap:18px" aria-live="polite">
+    <div class="menu-head">
+      <div>
+        <h2 id="menuTitle"></h2>
+        <p id="menuBlurb"></p>
+      </div>
+      <label class="toggle" for="quick"><input type="checkbox" id="quick"> 30 minutes or less</label>
     </div>
+    <div class="banner" id="banner"></div>
+    <div class="dishes" id="dishes"></div>
+  </section>
+
+  <section class="how" aria-label="How it works">
+    <div><span class="n">Step 1</span><b>Pick a vibe</b><p>Each mood is a district of the city with its own menu.</p></div>
+    <div><span class="n">Step 2</span><b>Tap Get clean recipe</b><p>Each dish links to a real recipe from a trusted food blog.</p></div>
+    <div><span class="n">Step 3</span><b>Skip the clutter</b><p>RecipeScraperPro opens with the link already filled in. Press Get the Recipe and you're cooking.</p></div>
+  </section>
+
+  <footer>
+    <span>Vibe City Kitchen</span>
+    <a href="https://recipescraper.pro/" target="_blank" rel="noopener">RecipeScraperPro</a>
+    <a href="https://shop.recipescraper.pro" target="_blank" rel="noopener">Kitchen tools shop</a>
+  </footer>
 </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <div class="hint">Where do you want to go?</div>
-            <input type="text" id="city-input" placeholder="Enter city (e.g. San Bernardino)">
-            
-            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 15px 0;">
-                <span style="font-size: 0.8rem; color: #a0aec0;">General Vibes</span>
-                <label class="switch">
-                    <input type="checkbox" id="hot-springs-toggle">
-                    <span class="slider-toggle"></span>
-                </label>
-                <span style="font-size: 0.8rem; color: #f6ad55; font-weight: bold;">Hot Springs Only ♨️</span>
-            </div>
 
-            <button id="scrape-btn" onclick="runScrape()" class="btn-main">Extract Vibes (-$0.10)</button>
-        </div>
+<script>
+const SITES = { rte: "RecipeTin Eats", sba: "Sally's Baking", ll: "Love & Lemons" };
+const SCRAPER = "https://recipescraper.pro/?url=";
 
-        <div id="results">
-            <p style="text-align: center; color: #718096;">Your discovery results will appear here.</p>
-        </div>
+const MOODS = [
+  { id: "cozy", name: "Cozy", street: "Blanket Ave", blurb: "Warm, slow, and a little bit indulgent. Food that feels like a sweater.",
+    dishes: [
+      ["Chicken pot pie", "Creamy filling under a flaky lid. Worth the oven time.", 75, "rte", "https://www.recipetineats.com/chicken-pot-pie/"],
+      ["French onion soup", "Deep caramelized onions and a cheesy bread raft.", 90, "rte", "https://www.recipetineats.com/french-onion-soup/"],
+      ["Stovetop mac and cheese", "Creamy, cheesy, one pot. A hug in a bowl.", 25, "rte", "https://www.recipetineats.com/stovetop-macaroni-cheese/"],
+      ["Overnight cinnamon rolls", "Make the dough tonight, bake them warm tomorrow morning.", 150, "sba", "https://sallysbakingaddiction.com/overnight-cinnamon-rolls/"]
+    ]},
+  { id: "tired", name: "Tired", street: "Low Battery Ln", blurb: "Minimal chopping, minimal dishes. Dinner without the effort.",
+    dishes: [
+      ["Garlic shrimp", "One pan, ten minutes, done.", 15, "rte", "https://www.recipetineats.com/garlic-prawns-shrimp/"],
+      ["Oven baked chicken breast", "Season, bake, and walk away. Juicy every time.", 30, "rte", "https://www.recipetineats.com/oven-baked-chicken-breast/"],
+      ["Dump and bake fried rice", "Everything goes in one dish and the oven does the work.", 50, "rte", "https://www.recipetineats.com/baked-fried-rice/"],
+      ["Quesadillas", "Cheese, tortilla, pan. That's the whole plan.", 20, "rte", "https://www.recipetineats.com/quesadilla/"]
+    ]},
+  { id: "celebrate", name: "Celebrating", street: "Confetti Blvd", blurb: "Something worth making a fuss over. Good news deserves good food.",
+    dishes: [
+      ["Picanha roast", "A crackling fat cap and rosy slices. Carve it at the table.", 90, "rte", "https://www.recipetineats.com/rump-cap-roast-picanha-recipe/"],
+      ["Confetti layer cake", "Sprinkles inside and out, because why not.", 120, "sba", "https://sallysbakingaddiction.com/funfetti-layer-cake/"],
+      ["Garlic shrimp mac and cheese", "Fancy comfort food for a big night.", 30, "rte", "https://www.recipetineats.com/shrimp-mac-and-cheese/"],
+      ["Chocolate lava cakes", "Molten centers in under half an hour.", 25, "sba", "https://sallysbakingaddiction.com/chocolate-lava-cakes/"]
+    ]},
+  { id: "reset", name: "Fresh Start", street: "Green Juice St", blurb: "Light, bright, and full of vegetables, without feeling like a punishment.",
+    dishes: [
+      ["Quinoa salad", "Crunchy, lemony, and good for lunches all week.", 25, "ll", "https://www.loveandlemons.com/quinoa-salad-recipe/"],
+      ["Buddha bowl", "Grains, roasted veg, and a sauce that ties it together.", 40, "ll", "https://www.loveandlemons.com/buddha-bowl-recipe/"],
+      ["Lentil soup", "Cheap, filling, and easy to freeze.", 45, "ll", "https://www.loveandlemons.com/lentil-soup/"],
+      ["Overnight oats", "Five minutes tonight, breakfast is ready tomorrow.", 5, "ll", "https://www.loveandlemons.com/overnight-oats-recipe/"]
+    ]},
+  { id: "homesick", name: "Homesick", street: "Mom's Kitchen Ct", blurb: "The classics. The stuff that tastes like being a kid again.",
+    dishes: [
+      ["Meatloaf", "Glazed, sliced thick, served with mashed potatoes.", 75, "rte", "https://www.recipetineats.com/meatloaf-recipe/"],
+      ["Chicken noodle soup", "The fix for a bad day or a bad cold.", 45, "rte", "https://www.recipetineats.com/chicken-and-vegetable-noodle-soup/"],
+      ["Italian meatballs", "Soft, saucy, and made for a pile of spaghetti.", 60, "rte", "https://www.recipetineats.com/classic-italian-meatballs-extra-soft-and-juicy/"],
+      ["Chocolate chip cookies", "Warm from the oven, milk on the side.", 30, "sba", "https://sallysbakingaddiction.com/chewy-chocolate-chip-cookies/"]
+    ]},
+  { id: "hangry", name: "Hangry", street: "Right Now Rd", blurb: "You need food and you need it fast. Everything here is ready in about 20 minutes.",
+    dishes: [
+      ["Double smash burgers", "Crispy edges, melty cheese, ready in a flash.", 15, "rte", "https://www.recipetineats.com/3-minute-double-smash-burgers/"],
+      ["Garlic noodles", "Butter, garlic, parmesan, noodles. Done.", 15, "rte", "https://www.recipetineats.com/garlic-noodles/"],
+      ["Quick chicken tacos", "Fast, saucy chicken with whatever toppings you have.", 20, "rte", "https://www.recipetineats.com/chicken-tacos-with-sauce/"],
+      ["Egg fried rice", "Fridge-raid dinner in one wok.", 15, "rte", "https://www.recipetineats.com/egg-fried-rice/"]
+    ]},
+  { id: "date", name: "Date Night", street: "Candlelight Row", blurb: "Impressive but not stressful, so you can actually enjoy the evening.",
+    dishes: [
+      ["Pan-seared steak", "Restaurant flavor with a hot pan and a knob of butter.", 20, "rte", "https://www.recipetineats.com/how-to-cook-steak/"],
+      ["Creamy sun-dried tomato chicken", "The Tuscan chicken vibe, with a silky sauce.", 25, "rte", "https://www.recipetineats.com/chicken-with-creamy-sun-dried-tomato-sauce/"],
+      ["Mushroom risotto", "Stir, sip, chat. A cooking-together dish.", 45, "ll", "https://www.loveandlemons.com/mushroom-risotto/"],
+      ["Crème brûlée", "Make it ahead, torch it at the table.", 60, "sba", "https://sallysbakingaddiction.com/creme-brulee/"]
+    ]},
+  { id: "rainy", name: "Rainy Day", street: "Drizzle Way", blurb: "Stay in, put something on the stove, and let it simmer.",
+    dishes: [
+      ["Chilli con carne", "One pot, deep flavor, better the next day.", 90, "rte", "https://www.recipetineats.com/chilli-con-carne/"],
+      ["Tomato soup", "Pair it with a grilled cheese. That's the rule.", 40, "ll", "https://www.loveandlemons.com/tomato-soup-recipe/"],
+      ["Banana bread", "Turns brown bananas into the best smell in the house.", 70, "sba", "https://sallysbakingaddiction.com/best-banana-bread-recipe/"],
+      ["Minestrone", "A big pot of veg, beans, and pasta to last the storm.", 45, "rte", "https://www.recipetineats.com/minestrone-soup/"]
+    ]},
+  { id: "sweet", name: "Sweet Tooth", street: "Sugar Alley", blurb: "Dessert first. No explanations needed.",
+    dishes: [
+      ["Fudgy frosted brownies", "Chewy middle, chocolate frosting on top.", 45, "sba", "https://sallysbakingaddiction.com/chewy-fudgy-frosted-brownies/"],
+      ["Apple crisp", "Easier than pie and just as good with ice cream.", 55, "sba", "https://sallysbakingaddiction.com/apple-crisp/"],
+      ["Chocolate pudding pots", "Little self-saucing chocolate puddings, warm from the oven.", 35, "rte", "https://www.recipetineats.com/chocolate-pudding-pots/"],
+      ["No-bake cheesecake", "Creamy and cool, no oven required.", 20, "sba", "https://sallysbakingaddiction.com/no-bake-cheesecake/"]
+    ]}
+];
 
-        <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <div class="hint" style="text-align: center;">Add Credits:</div>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="credit-btn" onclick="buyCredits(1)">$1</button>
-                <button class="credit-btn" onclick="buyCredits(5)">$5</button>
-                <button class="credit-btn" onclick="buyCredits(10)">$10</button>
-            </div>
-        </div>
-    </div>
+// Flat food illustrations, one per mood. Swap in a photo later by adding it to PHOTOS.
+// To use a stock photo instead of a drawing, put it in static/photos/ and list it here,
+// e.g. cozy: "/static/photos/cozy.jpg". Moods without a photo keep their drawing.
+const PHOTOS = {};
+const SH = '<ellipse cx="200" cy="176" rx="130" ry="10" fill="#2b1a12" opacity=".14"/>';
+const STEAM = (xs, y) => xs.map(x => `<path d="M${x},${y} q-10,-12 0,-24 q10,-12 0,-24" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".85"/>`).join("");
+const ART = {
+cozy: `${SH}
+  <path d="M86,118 L314,118 L294,170 L106,170 Z" fill="#c62f22"/>
+  <rect x="78" y="108" width="244" height="18" rx="9" fill="#e8590c"/>
+  <path d="M96,114 Q200,30 304,114 Z" fill="#f2b65a"/>
+  <g fill="#e39a3b">${[100,120,140,160,180,200,220,240,260,280,300].map(x=>`<circle cx="${x}" cy="114" r="9"/>`).join("")}</g>
+  <g stroke="#b9772e" stroke-width="5" stroke-linecap="round"><path d="M170,80 l14,10"/><path d="M200,72 l0,16"/><path d="M230,80 l-14,10"/></g>
+  ${STEAM([168,200,232],58)}`,
+tired: `${SH}
+  <rect x="280" y="126" width="104" height="16" rx="8" fill="#2b1a12" transform="rotate(-8 280 134)"/>
+  <ellipse cx="180" cy="134" rx="116" ry="42" fill="#3b302b"/>
+  <ellipse cx="180" cy="130" rx="100" ry="33" fill="#5a4a42"/>
+  <g fill="none" stroke="#ff8a5b" stroke-width="15" stroke-linecap="round">
+    <path d="M118,132 a20,18 0 1,1 26,10"/><path d="M168,118 a20,18 0 1,1 26,10"/><path d="M212,138 a20,18 0 1,1 26,10"/></g>
+  <g fill="#ffb18f"><path d="M144,142 l12,6 -8,8z"/><path d="M194,128 l12,6 -8,8z"/><path d="M238,148 l12,6 -8,8z"/></g>
+  <g fill="#fff3c4"><circle cx="150" cy="108" r="4"/><circle cx="232" cy="118" r="4"/><circle cx="130" cy="150" r="4"/><circle cx="262" cy="134" r="4"/></g>
+  <g fill="#4caf50"><circle cx="176" cy="148" r="3.5"/><circle cx="205" cy="104" r="3.5"/><circle cx="246" cy="108" r="3.5"/><circle cx="112" cy="122" r="3.5"/></g>
+  ${STEAM([150,210],78)}`,
+celebrate: `${SH}
+  <rect x="120" y="166" width="160" height="10" rx="5" fill="#c2410c"/>
+  <rect x="130" y="108" width="140" height="60" rx="10" fill="#fff1dc"/>
+  <rect x="130" y="134" width="140" height="9" fill="#ff7aa2"/>
+  <path d="M128,116 Q128,100 144,100 L256,100 Q272,100 272,116 L272,122 Q264,132 256,122 Q248,134 238,122 Q228,136 216,122 Q206,132 196,122 Q186,138 174,122 Q164,132 154,122 Q144,134 136,122 Q130,128 128,122 Z" fill="#ff9fbf"/>
+  <g>${[[150,152,"#5bc0eb"],[180,158,"#f5b700"],[214,150,"#4caf50"],[246,156,"#e8590c"],[164,112,"#ffffff"],[226,110,"#5bc0eb"],[198,114,"#f5b700"]].map(([x,y,c],i)=>`<rect x="${x}" y="${y}" width="10" height="4" rx="2" fill="${c}" transform="rotate(${i*37} ${x+5} ${y+2})"/>`).join("")}</g>
+  <g><rect x="165" y="70" width="9" height="32" rx="3" fill="#5bc0eb"/><rect x="196" y="64" width="9" height="38" rx="3" fill="#f5b700"/><rect x="227" y="70" width="9" height="32" rx="3" fill="#e8590c"/></g>
+  <g>${[[169,58],[200,52],[231,58]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="6" ry="10" fill="#ffb000"/><ellipse cx="${x}" cy="${y+3}" rx="3" ry="5" fill="#fff3a0"/>`).join("")}</g>
+  <g>${[[90,60,"#e8590c"],[316,48,"#5bc0eb"],[104,120,"#f5b700"],[300,110,"#ff7aa2"],[70,96,"#4caf50"],[334,92,"#f5b700"]].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="5" fill="${c}"/>`).join("")}</g>`,
+reset: `${SH}
+  <ellipse cx="326" cy="150" rx="26" ry="16" fill="#f5d33f"/><ellipse cx="326" cy="150" rx="18" ry="10" fill="#fff3a0"/>
+  <g fill="#3f9142">${[[130,104,-30],[160,92,-10],[195,86,5],[232,92,20],[264,104,35]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="15" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g>
+  <g fill="#6abf4b">${[[146,100,-20],[214,90,15],[180,96,0],[250,102,25]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="22" ry="11" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g>
+  <circle cx="168" cy="96" r="13" fill="#e53935"/><circle cx="168" cy="96" r="7" fill="#ff7a6e"/>
+  <circle cx="236" cy="94" r="13" fill="#e53935"/><circle cx="236" cy="94" r="7" fill="#ff7a6e"/>
+  <circle cx="202" cy="100" r="14" fill="#ffffff"/><circle cx="202" cy="100" r="7" fill="#f5b700"/>
+  <path d="M102,108 Q200,200 298,108 Z" fill="#ffffff"/>
+  <path d="M102,108 L298,108" stroke="#f2d6bf" stroke-width="6" stroke-linecap="round"/>
+  <path d="M128,140 Q200,170 272,140" fill="none" stroke="#e8590c" stroke-width="5" stroke-linecap="round" opacity=".7"/>`,
+homesick: `${SH}
+  <ellipse cx="200" cy="142" rx="160" ry="40" fill="#ffffff"/>
+  <ellipse cx="200" cy="140" rx="124" ry="28" fill="#faf0e4"/>
+  <path d="M232,140 q-6,-30 22,-34 q10,-16 30,-6 q24,-2 22,22 q8,16 -14,22 q-30,8 -60,-4z" fill="#fff6dc"/>
+  <rect x="268" y="108" width="14" height="10" rx="2" fill="#f5b700"/>
+  <g transform="rotate(-8 150 128)"><rect x="104" y="106" width="44" height="40" rx="6" fill="#8b4a2b"/><rect x="104" y="106" width="44" height="10" rx="5" fill="#c62f22"/></g>
+  <g transform="rotate(-8 190 126)"><rect x="152" y="104" width="44" height="40" rx="6" fill="#9b5533"/><rect x="152" y="104" width="44" height="10" rx="5" fill="#d7392b"/></g>
+  <g fill="#6abf4b">${[[214,152],[226,156],[238,152],[220,146],[232,147],[250,156]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5"/>`).join("")}</g>
+  ${STEAM([160,276],74)}`,
+hangry: `${SH}
+  <g stroke="#e8590c" stroke-width="5" stroke-linecap="round" opacity=".7"><path d="M60,90 h34"/><path d="M48,112 h40"/><path d="M62,134 h30"/></g>
+  <rect x="118" y="140" width="164" height="28" rx="14" fill="#e39a3b"/>
+  <rect x="110" y="122" width="180" height="24" rx="12" fill="#6b3a22"/>
+  <path d="M114,120 L286,120 L286,128 L270,128 L262,142 L254,128 L198,128 L188,144 L178,128 L114,128 Z" fill="#f5b700"/>
+  <rect x="122" y="108" width="156" height="12" rx="6" fill="#e53935"/>
+  <path d="M110,108 q12,-10 24,0 q12,-10 24,0 q12,-10 24,0 q12,-10 24,0 q12,-10 24,0 q12,-10 24,0 q12,-10 24,0 q6,-6 12,0 v6 h-180z" fill="#6abf4b"/>
+  <path d="M116,102 Q200,20 284,102 Z" fill="#f0a94f"/>
+  <g fill="#fff3d6">${[[170,70,-20],[200,60,0],[230,70,20],[185,86,-10],[218,84,15],[152,88,-30],[250,88,30]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="5" ry="2.6" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g>`,
+date: `${SH}
+  <ellipse cx="170" cy="142" rx="132" ry="36" fill="#ffffff"/>
+  <ellipse cx="170" cy="140" rx="104" ry="26" fill="#faf0e4"/>
+  <path d="M104,134 q-6,-26 30,-30 q40,-10 70,0 q34,8 26,30 q-6,20 -60,18 q-60,0 -66,-18z" fill="#f3d2b3"/>
+  <path d="M110,132 q-4,-20 26,-24 q38,-8 66,0 q28,8 22,26 q-6,14 -56,14 q-54,0 -58,-16z" fill="#7a3b24"/>
+  <g stroke="#4a2314" stroke-width="5" stroke-linecap="round"><path d="M136,116 l30,24"/><path d="M164,112 l30,24"/><path d="M192,112 l26,22"/></g>
+  <rect x="152" y="104" width="22" height="14" rx="3" fill="#f5d33f"/><circle cx="168" cy="106" r="3" fill="#4caf50"/>
+  <path d="M310,62 h44 q0,40 -22,44 q-22,-4 -22,-44z" fill="#8e1b3a"/>
+  <path d="M306,40 h52 q2,44 -26,70 q-28,-26 -26,-70z" fill="none" stroke="#ffffff" stroke-width="4" opacity=".75"/>
+  <path d="M332,110 v52" stroke="#ffffff" stroke-width="4" opacity=".75"/>
+  <ellipse cx="332" cy="166" rx="20" ry="5" fill="#ffffff" opacity=".75"/>
+  <g fill="#e53935">${[[268,52],[96,58]].map(([x,y])=>`<path d="M${x},${y+6} l-9,-9 a5.5,5.5 0 0,1 9,-6 a5.5,5.5 0 0,1 9,6z"/>`).join("")}</g>`,
+rainy: `${SH}
+  <g fill="#7fb3d5">${[[70,40],[110,70],[300,36],[340,72],[150,30],[260,64],[90,110],[320,118]].map(([x,y])=>`<path d="M${x},${y} q-7,12 0,16 q7,-4 0,-16z"/>`).join("")}</g>
+  <path d="M116,112 Q200,206 284,112 Z" fill="#c62f22"/>
+  <ellipse cx="200" cy="112" rx="86" ry="16" fill="#e8590c"/>
+  <ellipse cx="200" cy="112" rx="76" ry="11" fill="#9c2f1a"/>
+  <g fill="#5a1f12">${[[160,112],[182,116],[222,110],[240,114],[200,108]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="6" ry="3.5"/>`).join("")}</g>
+  <g stroke="#f5b700" stroke-width="3" stroke-linecap="round"><path d="M168,106 l10,4"/><path d="M226,118 l12,-3"/><path d="M190,118 l8,-6"/></g>
+  <ellipse cx="204" cy="106" rx="16" ry="7" fill="#ffffff"/>
+  <g fill="#6abf4b"><circle cx="196" cy="102" r="3"/><circle cx="212" cy="104" r="3"/><circle cx="174" cy="114" r="3"/></g>
+  ${STEAM([176,224],84)}`,
+sweet: `${SH}
+  <rect x="292" y="70" width="52" height="98" rx="8" fill="#ffffff" opacity=".9"/>
+  <rect x="296" y="92" width="44" height="72" rx="6" fill="#f7f7f2"/>
+  <g transform="rotate(-6 170 152)"><rect x="110" y="134" width="110" height="34" rx="6" fill="#4a2a1a"/><rect x="110" y="134" width="110" height="10" rx="5" fill="#5e3826"/></g>
+  <g transform="rotate(4 180 116)"><rect x="128" y="98" width="104" height="34" rx="6" fill="#53301e"/><rect x="128" y="98" width="104" height="10" rx="5" fill="#6b4029"/></g>
+  <g transform="rotate(-3 186 82)"><rect x="140" y="64" width="96" height="32" rx="6" fill="#4a2a1a"/><rect x="140" y="64" width="96" height="10" rx="5" fill="#6b4029"/></g>
+  <path d="M146,70 q14,10 26,0 q14,12 26,0 q14,10 28,2" fill="none" stroke="#c98a5a" stroke-width="4" stroke-linecap="round"/>
+  <g fill="#2b1a12">${[[130,170],[256,168],[96,160],[268,150]].map(([x,y])=>`<path d="M${x},${y} l6,-9 l6,9z"/>`).join("")}</g>`
+};
+const artSvg = id => `<svg viewBox="0 0 400 200" role="img" aria-label="${(MOODS.find(m=>m.id===id)||{}).name || ""} food illustration" preserveAspectRatio="xMidYMid meet">${ART[id] || ""}</svg>`;
+const visual = id => PHOTOS[id] ? `<img src="${PHOTOS[id]}" alt="">` : artSvg(id);
 
-    <script>
-       <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeCity.me | Find Your Energy</title>
-    <style>
-        body {
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white; transition: background 1.5s ease-in-out;
-            overflow-y: auto; padding: 20px;
-        }
+let current = "cozy";
+try { const s = localStorage.getItem("vc-mood"); if (s && MOODS.some(m => m.id === s)) current = s; } catch (e) {}
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px; padding: 40px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            width: 95%; max-width: 450px;
-        }
+const fmt = m => m < 60 ? m + " min" : (Math.floor(m/60) + " hr" + (m % 60 ? " " + (m % 60) + " min" : ""));
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
-        h1 { margin-top: 0; letter-spacing: -1px; color: #f6ad55; }
-        .hint { font-size: 0.8rem; color: #a0aec0; margin-bottom: 8px; text-align: left; }
-        
-        input[type="text"] {
-            width: 100%; padding: 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid rgba(255, 255, 255, 0.2); color: white; margin-bottom: 10px; box-sizing: border-box; outline: none;
-        }
+const dEl = document.getElementById("districts");
+dEl.innerHTML = MOODS.map(m =>
+  `<button class="district" type="button" id="m-${m.id}" data-id="${m.id}" aria-pressed="false"><span class="thumb" aria-hidden="true">${artSvg(m.id)}</span><span class="name">${m.name}</span><span class="street">${m.street}</span></button>`
+).join("");
+dEl.addEventListener("click", e => {
+  const b = e.target.closest(".district"); if (!b) return;
+  current = b.dataset.id;
+  try { localStorage.setItem("vc-mood", current); } catch (err) {}
+  render();
+});
+document.getElementById("quick").addEventListener("change", render);
 
-        .btn-main { background: #ed8936; border: none; width: 100%; font-size: 1rem; color: white; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        /* TOGGLE SWITCH CSS */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider-toggle { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 20px; }
-        .slider-toggle:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider-toggle { background-color: #f6ad55; }
-        input:checked + .slider-toggle:before { transform: translateX(20px); }
-
-        #results { margin-top: 25px; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.2); text-align: left; min-height: 50px; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.05); }
-        .credit-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <div class="glass-card">
-        <h1>VibeCity.me</h1>
-        <p id="vibe-label" style="color: #a0aec0;">Extracting local energy...</p>
-
-        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; margin-bottom: 20px;">
-            <span style="font-size: 0.7rem; color: #718096;">BALANCE: </span>
-            <span id="balance-amt" style="font-weight: bold; color: #f6ad55;">$0.00</span>
-        </div>
-<div style="margin-bottom: 20px; font-size: 0.7rem; color: #718096; word-break: break-all;">
-    <div>YOUR UNIQUE KEY:</div>
-    <div id="display-key" style="background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; margin-top: 5px; cursor: pointer;" onclick="copyToClipboard()">
-        Loading key...
-    </div>
-</div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <div class="hint">Where do you want to go?</div>
-            <input type="text" id="city-input" placeholder="Enter city (e.g. San Bernardino)">
-            
-            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 15px 0;">
-                <span style="font-size: 0.8rem; color: #a0aec0;">General Vibes</span>
-                <label class="switch">
-                    <input type="checkbox" id="hot-springs-toggle">
-                    <span class="slider-toggle"></span>
-                </label>
-                <span style="font-size: 0.8rem; color: #f6ad55; font-weight: bold;">Hot Springs Only ♨️</span>
-            </div>
-
-            <button id="scrape-btn" onclick="runScrape()" class="btn-main">Extract Vibes (-$0.10)</button>
-        </div>
-
-        <div id="results">
-            <p style="text-align: center; color: #718096;">Your discovery results will appear here.</p>
-        </div>
-
-        <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <div class="hint" style="text-align: center;">Add Credits:</div>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="credit-btn" onclick="buyCredits(1)">$1</button>
-                <button class="credit-btn" onclick="buyCredits(5)">$5</button>
-                <button class="credit-btn" onclick="buyCredits(10)">$10</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let userKey = localStorage.getItem('vibecity_api_key');
-
-        async function initApp() {
-            if (!userKey) {
-                const res = await fetch('/generate_key', { method: 'POST' });
-                const data = await res.json();
-                userKey = data.api_key;
-                localStorage.setItem('vibecity_api_key', userKey);
-            }
-            fetchBalance();
-        }
-
-        async function fetchBalance() {
-            const res = await fetch(`/check_balance?key=${userKey}`);
-            const data = await res.json();
-            document.getElementById('balance-amt').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
-        }
-
-        async function runScrape() {
-            const city = document.getElementById('city-input').value.trim();
-            const isHotSprings = document.getElementById('hot-springs-toggle').checked;
-            const btn = document.getElementById('scrape-btn');
-            
-            if (!city) return alert("Please enter a city!");
-
-            btn.disabled = true;
-            btn.innerText = "Tuning Engine... 🪐";
-
-            try {
-                const res = await fetch('/scrape', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        url: city, 
-                        api_key: userKey,
-                        hot_springs: isHotSprings 
-                    })
-                });
-                const data = await res.json();
-                
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    const recs = data.result.recommendations;
-                    let html = `<h3 style="margin-top:0; color:#f6ad55;">${data.result.location}</h3><ul>`;
-                    recs.forEach(r => html += `<li>${r}</li>`);
-                    html += `</ul><p style="font-size:0.7rem; color:#718096;">Source: ${data.result.source_url}</p>`;
-                    document.getElementById('results').innerHTML = html;
-                    fetchBalance();
-                }
-            } catch (e) {
-                alert("Connection error.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Extract Vibes (-$0.10)";
-            }
-        }
-
-        async function buyCredits(amount) {
-            const res = await fetch('/create_checkout', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ amount: amount, api_key: userKey })
-            });
-            const data = await res.json();
-            if (data.url) window.location.href = data.url;
-        }
-
-        initApp();
-    </script>
- 
-</body>
-</html>
-
-    </script>
- 
+function render() {
+  const mood = MOODS.find(m => m.id === current);
+  const quick = document.getElementById("quick").checked;
+  dEl.querySelectorAll(".district").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === current));
+  document.getElementById("menuTitle").textContent = mood.name + " menu";
+  document.getElementById("menuBlurb").textContent = mood.blurb;
+  document.getElementById("banner").innerHTML = visual(current);
+  const list = mood.dishes.filter(d => !quick || d[2] <= 30);
+  const box = document.getElementById("dishes");
+  if (!list.length) { box.innerHTML = `<div class="empty">Nothing on this menu is under 30 minutes. Turn off the filter or try the Hangry district.</div>`; return; }
+  box.innerHTML = list.map(([name, desc, mins, site, url]) => `<article class="dish">
+      <div class="meta"><span>${fmt(mins)}</span><span>${SITES[site]}</span></div>
+      <h3>${esc(name)}</h3>
+      <p>${esc(desc)}</p>
+      <div class="actions">
+        <a class="btn primary" href="${SCRAPER + encodeURIComponent(url)}" target="_blank" rel="noopener">Get clean recipe</a>
+        <a class="btn" href="${url}" target="_blank" rel="noopener">Original post</a>
+      </div>
+    </article>`
+  ).join("");
+}
+render();
+</script>
 </body>
 </html>
